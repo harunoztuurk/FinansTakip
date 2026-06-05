@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Gelir Ekle</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+    <div class="container">
+        <a class="navbar-brand" href="/">💰 Bütçe Takip</a>
+
+        <div class="navbar-nav">
+            <a class="nav-link" href="/">🏠 Ana Sayfa</a>
+            <a class="nav-link" href="/gelir-ekle/">💵 Gelirler</a>
+            <a class="nav-link" href="/gider-ekle/">💸 Giderler</a>
+            <a class="nav-link" href="/raporlar/">📊 Raporlar</a>
+        </div>
+    </div>
+</nav>
+
+<div class="container mt-5">
+    <div class="card p-4 shadow">
+        <h2>💰 Gelir Ekle</h2>
+
+        <form method="POST">
+            {% csrf_token %}
+
+            <div class="mb-3">
+                <label>Tarih</label>
+                <input type="date" name="tarih" class="form-control">
+            </div>
+
+            <div class="mb-3">
+                <label>Açıklama</label>
+                <input type="text" name="aciklama" class="form-control">
+            </div>
+
+            <div class="mb-3">
+                <label>Tutar</label>
+                <input type="number" step="0.01" name="tutar" class="form-control">
+            </div>
+
+            <div class="mb-3">
+                <label>Kategori</label>
+                <select name="kategori" class="form-control">
+    <option value="Maaş">Maaş</option>
+    <option value="Ek Gelir">Ek Gelir</option>
+    <option value="Satış">Satış</option>
+    <option value="Prim">Prim</option>
+    <option value="Diğer">Diğer</option>
+</select>
+            </div>
+
+            <button class="btn btn-success">
+                Kaydet
+            </button>
+            <a href="/" class="btn btn-secondary mt-2">Ana Sayfaya Dön</a>
+        </form>
+<hr>
+<h4>Gelir Listesi</h4>
+
+<form method="GET" class="row mb-3">
+
+    <div class="col">
+        <input type="date" name="baslangic" class="form-control">
+    </div>
+
+    <div class="col">
+        <input type="date" name="bitis" class="form-control">
+    </div>
+
+    <div class="col">
+    <select name="kategori" class="form-control">
+        <option value="">Tüm Kategoriler</option>
+        <option value="Maaş">Maaş</option>
+        <option value="Ek Gelir">Ek Gelir</option>
+        <option value="Satış">Satış</option>
+        <option value="Prim">Prim</option>
+        <option value="Diğer">Diğer</option>
+    </select>
+</div>
+    <div class="col">
+        <button class="btn btn-secondary">Filtrele</button>
+        <a href="/gelir-ekle/" class="btn btn-outline-secondary">Temizle</a>
+    </div>
+
+</form>
+
+<table class="table table-bordered">
+    <tr>
+        <th>Tarih</th>
+        <th>Açıklama</th>
+        <th>Tutar</th>
+        <th>Kategori</th>
+        <th>İşlem</th>
+    </tr>
+
+    {% for gelir in gelirler %}
+    <tr>
+        <td>{{ gelir.tarih }}</td>
+        <td>{{ gelir.aciklama }}</td>
+        <td>{{ gelir.tutar }} TL</td>
+        <td>{{ gelir.kategori }}</td>
+        <td>
+ <a href="/gelir-duzenle/{{ gelir.id }}/" class="btn btn-sm btn-warning">Düzenle</a>  
+ <a href="/gelir-sil/{{ gelir.id }}/" class="btn btn-sm btn-danger">Sil</a>
+</td>
+    </tr>
+    {% endfor %}
+</table>
+    </div>
+</div>
+
+</body>
+</html>
