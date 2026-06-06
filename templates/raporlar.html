@@ -128,9 +128,13 @@
 </div>
 {% endblock %}
 
-{% block scripts %}
+{{ kategori_adlari|json_script:"kategori-adlari-data" }}
+{{ kategori_tutarlari|json_script:"kategori-tutarlari-data" }}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
+const kategoriAdlari = JSON.parse(document.getElementById('kategori-adlari-data').textContent);
+const kategoriTutarlari = JSON.parse(document.getElementById('kategori-tutarlari-data').textContent);
+
 new Chart(document.getElementById('gelirGiderChart'), {
     type: 'bar',
     data: {
@@ -153,9 +157,9 @@ new Chart(document.getElementById('gelirGiderChart'), {
 new Chart(document.getElementById('kategoriChart'), {
     type: 'doughnut',
     data: {
-        labels: {{ kategori_adlari|safe }},
+        labels: kategoriAdlari,
         datasets: [{
-            data: {{ kategori_tutarlari|safe }},
+            data: kategoriTutarlari,
             backgroundColor: ['#0d6efd', '#198754', '#ffc107', '#dc3545', '#6f42c1', '#20c997']
         }]
     },
@@ -167,3 +171,4 @@ new Chart(document.getElementById('kategoriChart'), {
 });
 </script>
 {% endblock %}
+

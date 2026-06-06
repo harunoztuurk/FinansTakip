@@ -343,10 +343,13 @@ def _rapor_verileri(kullanici, finans_turu, ay=None):
     gelirler = tum_gelirler
     giderler = tum_giderler
 
-    if ay:
+    import re
+    if ay and re.match(r'^\d{4}-\d{2}$', ay):
         yil, ay_numarasi = ay.split("-")
         gelirler = gelirler.filter(tarih__year=yil, tarih__month=ay_numarasi)
         giderler = giderler.filter(tarih__year=yil, tarih__month=ay_numarasi)
+    else:
+        ay = None
 
     aylik_gelir = gelirler.aggregate(Sum("tutar"))["tutar__sum"] or 0
     aylik_gider = giderler.aggregate(Sum("tutar"))["tutar__sum"] or 0
