@@ -37,6 +37,13 @@ def health(request):
     return JsonResponse({"status": "ok"})
 
 
+def favicon(request):
+    svg = """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="12" fill="#2563eb"/><path fill="#fff" d="M18 20h28a6 6 0 0 1 6 6v20a6 6 0 0 1-6 6H18a6 6 0 0 1-6-6V26a6 6 0 0 1 6-6Zm0 8v18h28V28H18Zm23 7h6v6h-6z"/><path fill="#93c5fd" d="M20 12h22a4 4 0 0 1 4 4v4H18v-6a2 2 0 0 1 2-2Z"/></svg>"""
+    response = HttpResponse(svg, content_type="image/svg+xml")
+    response["Cache-Control"] = "public, max-age=86400"
+    return response
+
+
 def _secilen_finans_turu(veri):
     finans_turu = veri.get("finans_turu") or FINANS_KISISEL
     gecerli_turler = [deger for deger, _ in FINANS_TURU_SECENEKLERI]
