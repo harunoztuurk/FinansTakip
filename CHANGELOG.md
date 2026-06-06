@@ -24,6 +24,7 @@ Bu dosya, FinansTakip projesindeki önemli değişiklikleri listeler.
 - `.env` desteği, Render için `Procfile`, CSRF trusted origin yönetimi ve `psycopg2-binary` PostgreSQL sürücüsü deploy hazırlığına eklendi.
 - GitHub hazırlığı için yerel veritabanı, environment dosyaları, Python cache dosyaları ve static build çıktıları `.gitignore` kapsamına alındı.
 - Render build sürecinde Django 6 uyumluluğu için Python sürümü `.python-version` ile 3.12 olarak sabitlendi.
+- Render dış ağ kontrolü için `health/` endpoint'i eklendi ve host/CSRF environment değerleri şema, boşluk ve son slash hatalarına karşı normalize edildi.
 
 ### Düzeltildi
 - Tekrarlayan ödeme tablosunda eksik kalan `tekrar_turu` ve `tekrar_araligi` kolonlarını veri silmeden ekleyen migration düzeltmesi eklendi.

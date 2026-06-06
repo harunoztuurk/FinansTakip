@@ -9,7 +9,7 @@ from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.db.models import Sum
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, render, redirect
 from django.utils import timezone
 from reportlab.lib import colors
@@ -31,6 +31,10 @@ from .models import (
     OdemeDonemi,
     TekrarlayanOdeme,
 )
+
+
+def health(request):
+    return JsonResponse({"status": "ok"})
 
 
 def _secilen_finans_turu(veri):

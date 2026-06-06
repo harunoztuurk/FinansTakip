@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 
 import os
 from pathlib import Path
+from urllib.parse import urlparse
 
 import dj_database_url
 from dotenv import load_dotenv
@@ -28,6 +29,28 @@ def env_bool(name, default=False):
     return os.environ.get(name, str(default)).lower() in ['1', 'true', 'yes', 'on']
 
 
+def env_list(name):
+    return [
+        value.strip()
+        for value in os.environ.get(name, '').split(',')
+        if value.strip()
+    ]
+
+
+def normalize_host(value):
+    parsed = urlparse(value if '://' in value else f'//{value}')
+    host = parsed.netloc or parsed.path
+    return host.split('/')[0].strip()
+
+
+def normalize_origin(value):
+    parsed = urlparse(value)
+    if parsed.scheme and parsed.netloc:
+        return f'{parsed.scheme}://{parsed.netloc}'
+    host = normalize_host(value)
+    return f'https://{host}' if host else ''
+
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env_bool('DEBUG', True)
 
@@ -40,27 +63,20 @@ if not SECRET_KEY:
     else:
         raise RuntimeError('SECRET_KEY environment variable must be set when DEBUG=False.')
 
-ALLOWED_HOSTS = [
-    host.strip()
-    for host in os.environ.get('ALLOWED_HOSTS', '').split(',')
-    if host.strip()
-]
+ALLOWED_HOSTS = [host for host in [normalize_host(value) for value in env_list('ALLOWED_HOSTS')] if host]
 
 if DEBUG and not ALLOWED_HOSTS:
     ALLOWED_HOSTS = ['localhost', '127.0.0.1', '[::1]']
 
 render_external_hostname = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
+render_external_hostname = normalize_host(render_external_hostname) if render_external_hostname else ''
 if render_external_hostname and render_external_hostname not in ALLOWED_HOSTS:
     ALLOWED_HOSTS.append(render_external_hostname)
 
-csrf_trusted_origins = [
-    origin.strip()
-    for origin in os.environ.get('CSRF_TRUSTED_ORIGINS', '').split(',')
-    if origin.strip()
-]
+csrf_trusted_origins = [origin for origin in [normalize_origin(value) for value in env_list('CSRF_TRUSTED_ORIGINS')] if origin]
 if render_external_hostname:
     csrf_trusted_origins.append(f'https://{render_external_hostname}')
-CSRF_TRUSTED_ORIGINS = csrf_trusted_origins
+CSRF_TRUSTED_ORIGINS = sorted(set(csrf_trusted_origins))
 
 
 # Application definition
